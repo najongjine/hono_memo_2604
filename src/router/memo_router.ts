@@ -111,4 +111,30 @@ router.post("/update_memo", async (c) => {
     });
   }
 });
+
+router.post("/update_memo", async (c) => {
+  try {
+    const body = await c.req.parseBody();
+    const id = Number(body["id"] || 0);
+    const result = await query(
+      `
+    DELETE FROM t_memo
+    WHERE id = $1
+    `,
+      [id],
+    );
+    console.log(`#result:`, result);
+
+    return c.json({
+      success: true,
+      data: result?.rows,
+    });
+  } catch (e: any) {
+    return c.json({
+      success: false,
+      data: null,
+      msg: `!server error. ${e?.message}`,
+    });
+  }
+});
 export default router;
