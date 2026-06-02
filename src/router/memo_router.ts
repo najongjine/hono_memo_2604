@@ -25,4 +25,59 @@ router.get("/", async (c) => {
   }
 });
 
+router.get("/select_by_id", async (c) => {
+  try {
+    const id = Number(c.req.query("id") || 0);
+    const result = await query(
+      `
+      SELECT 
+       *
+      FROM t_memo
+      WHERE id=$1
+    `,
+      [id],
+    );
+    console.log(`#result:`, result);
+
+    return c.json({
+      success: true,
+      data: result.rows,
+    });
+  } catch (e: any) {
+    return c.json({
+      success: false,
+      data: null,
+      msg: `!server error. ${e?.message}`,
+    });
+  }
+});
+
+router.post("/insert_memo", async (c) => {
+  try {
+    const body = await c.req.parseBody();
+    const title = String(body["title"] || "");
+    const content = String(body["content"] || "");
+    const nickname = String(body["nickname"] || "");
+    const result = await query(
+      `
+    INSERT INTO t_memo(title,content,nickname)
+    VALUES($1,$2,$3)
+    `,
+      [title, content, nickname],
+    );
+    console.log(`#result:`, result);
+
+    return c.json({
+      success: true,
+      data: result?.rows,
+    });
+  } catch (e: any) {
+    return c.json({
+      success: false,
+      data: null,
+      msg: `!server error. ${e?.message}`,
+    });
+  }
+});
+
 export default router;
