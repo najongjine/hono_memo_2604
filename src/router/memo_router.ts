@@ -112,7 +112,7 @@ router.post("/update_memo", async (c) => {
   }
 });
 
-router.post("/update_memo", async (c) => {
+router.post("/delete_memo", async (c) => {
   try {
     const body = await c.req.parseBody();
     const id = Number(body["id"] || 0);
